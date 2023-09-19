@@ -1,0 +1,20 @@
+version: '3.1'
+services:
+  security-db:
+    image: postgres:15.3
+    container_name: security-db
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5433:5432'
+    volumes: 
+      - ./dbscripts/CREATE_SECURITY_DB_SCRIPT.sql:/docker-entrypoint-initdb.d/CREATE_SECURITY_DB_SCRIPT.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "SECURITY"]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+      start_period: 50s
